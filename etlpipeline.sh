@@ -8,29 +8,33 @@ echo "columns in insurance.csv"
 csvcut -n insurance.csv
 
 
-echo " desired data inside insurance.csv"
+echo "desired data inside insurance.csv\n"
+
 #print date frome desired columns
 csvcut -c age,sex,region,charges insurance.csv | csvlook
 
 #Transform
 
-echo "Transforming Data"
+echo "Transforming Data \n"
+
 #We only want age sex region charges
 cut -d, -f3,4,5 --complement insurance.csv > cleaned.csv
 
 # print cleaned.csv
-echo "cleaned data"
+echo "\n cleaned data\n"
 csvlook cleaned.csv
 
-#pre-Load phase
+# Load 
 
-echo "Loading Data"
+echo "\n Loading Data \n"
 
 #Create a database called insuranced
+
 psql -U postgres -c "CREATE DATABASE insurancedb;"
 
 
 # Creating table in insurance where the csv data will be loaded
+
 psql -U postgres -d insurancedb -c " CREATE TABLE insured( id SERIAL PRIMARY KEY,
 		      age VARCHAR(255),
 		      sex VARCHAR(255),
@@ -41,12 +45,10 @@ psql -U postgres -d insurancedb -c " CREATE TABLE insured( id SERIAL PRIMARY KEY
 
 
 # Load Phase
-echo " Loading data"
+echo " \n Loading data \n"
 
-#Send the instructions to connect to  'insurance database' and
-#copy the csv to the table 'insured' through command pipeline.
-#\c - to connect to your database
 #\COPY csv into table insured
+
 psql -U postgres -d insurancedb -c "\copy insured(age,sex,region,charges)
 FROM 'cleaned.csv'
 DELIMITER ','
